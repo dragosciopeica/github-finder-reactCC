@@ -24,6 +24,8 @@ class Search extends Component {
     
     // ======> Daca nu am avea arrow function, daca am apela this.state.text va da eroare. Trebuie bind-uit this-ul in onSubmit.bind(this)
     onSubmit = (e) => {
+
+        // la FORM avem action="", ala e default-ul lui. Pentru a preveni sa se intample asta, adica atunci cand dau click sa NU faca nimic, apelez preventDefault.
         e.preventDefault();
         if(this.state.text === '' ) {
             this.props.setAlert('Please enter something', 'light')

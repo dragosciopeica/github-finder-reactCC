@@ -44,7 +44,7 @@ const Users = ({users, loading}) => {
             <div style={userStyle}>           
             {/* Folosim o LISTA ( adica MAP, care parcurge un array si il modifica ), asa se numeste in React */}     
                 {users.map(user => (
-                    <UserItem key={user.id} user = { user } />   // User = { user } trimite tot user-ul mai departe. 
+                    <UserItem key={user.id} user = { user } />   // user = { user } trimite tot user-ul mai departe. 
                     // Pasam ca un PROP (user) lui UserItem. In UserItem o sa folosim "this.prop.user"
                 ))}
             </div>
