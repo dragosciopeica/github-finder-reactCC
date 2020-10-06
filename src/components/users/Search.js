@@ -5,12 +5,15 @@ class Search extends Component {
 
     // Cand avem de-a face cu o FORM in React, e bine sa-i atribuim STATE
     state = {
-        // Obiecte, adica NUME : VALOARE
+        // Sintaxa in interior: sunt obiecte, deci NUME : VALOARE
         text: ''
     };
 
     static propTypes = {
-        searchUsers: PropTypes.func.isRequired        
+        searchUsers: PropTypes.func.isRequired,        
+        clearUsers: PropTypes.func.isRequired,
+        showClear: PropTypes.bool.isRequired,
+        setAlert: PropTypes.func.isRequired   
     }
 
     // Functie onChange, care are un event. 
@@ -22,18 +25,30 @@ class Search extends Component {
     // ======> Daca nu am avea arrow function, daca am apela this.state.text va da eroare. Trebuie bind-uit this-ul in onSubmit.bind(this)
     onSubmit = (e) => {
         e.preventDefault();
-        // console.log(this.state.text);
-        this.props.searchUsers(this.state.text);
-        this.setState({ text: ''});
+        if(this.state.text === '' ) {
+            this.props.setAlert('Please enter something', 'light')
+        }
+        else {
+
+            this.props.searchUsers(this.state.text);
+            this.setState({ text: ''});
+
+        }
+
     }
 
     render () {
+        const {showClear, clearUsers} = this.props;
+
         return (
             <div>
                 <form onSubmit = {this.onSubmit} action="" className="form">
                     <input type="text" name="text" placeholder="Search users..." value={this.state.text} onChange={this.onChange} />
                     <input type="submit" value="search" className="btn btn-dark btn-block"/>
                 </form>
+
+            {/* && face un "AND" si verifica daca e TRUE expresia */}
+                {showClear && <button className="btn btn-light btn-block" onClick={clearUsers}>Clear</button>}
             </div>
         )        
     }
