@@ -1,32 +1,35 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import Spinner from "../layout/Spinner";
 import Repos from "../repos/Repos"
 import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 
 
-class User extends Component {
+const User = ({loading, user, getUser, getUserRepos, repos, match}) =>  {
  
-static propTypes = {
-    loading: PropTypes.bool,
-    user: PropTypes.object.isRequired,
-    getUser: PropTypes.func.isRequired,
-    getUserRepos: PropTypes.func.isRequired,
-    repos: PropTypes.array.isRequired,
-}
 
-    componentDidMount () {
-        // params.login e luat de aici: " path="/user/:login"", care e in Route la App.js
-        this.props.getUser(this.props.match.params.login);
-        this.props.getUserRepos(this.props.match.params.login);
+    // Asta cu HOOks ( adica useEffect ) devin asa:
+
+    // componentDidMount () {
+    //     // params.login e luat de aici: " path="/user/:login"", care e in Route la App.js
+    //     this.props.getUser(match.params.login);
+    //     this.props.getUserRepos(match.params.login);
     
-    }
+    // }
+
+    // !!!!!!!!!!! ATENTIE LA [ ] DE LA FINAL !!!!!!!!!!
+    useEffect( () => {
+                getUser(match.params.login);
+                getUserRepos(match.params.login);
+                // Comentariul de mai jos elimina warningul care apare in legatura cu dependency getUser si getUserRepos
+                // eslint-disable-next-line
+               }, [] ) // punem la final [ ] pentru a opri 'loop-ul' in care itnra useEffect. In cazul asta mimeaza perfect functionalitatea lui componentDidMount
 
 
-    render() {
-        const {name, avatar_url, location, bio, blog, login, html_url, company, followers, following, public_repos, public_gists, hireable} = this.props.user; // din APP.js
+  
+        const {name, avatar_url, location, bio, blog, login, html_url, company, followers, following, public_repos, public_gists, hireable} = user; // din APP.js
 
-        const { loading, repos } = this.props; // din APP.js
+        // const { loading, repos } = this.props; // din APP.js
 
         if ( loading ) {
             return <Spinner/>
@@ -81,8 +84,15 @@ static propTypes = {
 
                 <Repos repos = {repos} />
             </Fragment>
-        )
-    }
+        )   
+}
+
+User.propTypes = {
+    loading: PropTypes.bool,
+    user: PropTypes.object.isRequired,
+    getUser: PropTypes.func.isRequired,
+    getUserRepos: PropTypes.func.isRequired,
+    repos: PropTypes.array.isRequired,
 }
 
 export default User
