@@ -1,12 +1,17 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useContext } from 'react';
 import Spinner from "../layout/Spinner";
 import Repos from "../repos/Repos"
-import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
+import GithubContext from '../../context/github/githubContext'
 
 
-const User = ({loading, user, getUser, getUserRepos, repos, match}) =>  {
+const User = ({  match}) =>  {
+
+    const githubContext = useContext(GithubContext);
  
+
+    // NU UITA SA O PUI IN VALUE in GithubState.js
+    const { repos, getUserRepos, getUser, loading, user } = githubContext;
 
     // Asta cu HOOks ( adica useEffect ) devin asa:
 
@@ -39,7 +44,7 @@ const User = ({loading, user, getUser, getUserRepos, repos, match}) =>  {
                 <Link to="/" className='btn btn-light'>Back to search</Link>
                 {/* Afisam un text simplu, 'Hireable' */}
                 Hireable: {' '}
-                {hireable ? <i className='fas fa-check text-success' /> : <i className='fas fa-time-circle text-danger' />}
+                {hireable ? <i className='fas fa-check text-success' /> : <i className='fas fa-times-circle text-danger'/>}
 
                 <div className="card grid-2">
                     <div className="all-center">
@@ -87,12 +92,6 @@ const User = ({loading, user, getUser, getUserRepos, repos, match}) =>  {
         )   
 }
 
-User.propTypes = {
-    loading: PropTypes.bool,
-    user: PropTypes.object.isRequired,
-    getUser: PropTypes.func.isRequired,
-    getUserRepos: PropTypes.func.isRequired,
-    repos: PropTypes.array.isRequired,
-}
+
 
 export default User

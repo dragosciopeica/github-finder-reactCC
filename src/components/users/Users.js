@@ -1,12 +1,15 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import UserItem from "./UserItem"
 import Spinner from "../layout/Spinner"
-import PropTypes from "prop-types"
+import GithubContext from '../../context/github/githubContext'
 
 // o schimbam in function
 
 // destructing, scoatem din props users si loading
-const Users = ({users, loading}) => {
+const Users = () => {
+
+    // acum avem access la tot ce e cuprins in GithubContext.Provider value ={} 
+    const githubContext = useContext(GithubContext);
 
 
     // === Nu mai avem nevoie de "state" ca-l avem in APP
@@ -35,6 +38,8 @@ const Users = ({users, loading}) => {
     //     ]
     // }
 
+    const { loading, users } = githubContext;
+
     if(loading) {
         return <Spinner />
     }
@@ -61,9 +66,5 @@ const userStyle = {
     gridGap: "1rem"
 }
 
-Users.propTypes = {
-    users: PropTypes.array.isRequired,
-    loading: PropTypes.bool.isRequired
-}
 
 export default Users

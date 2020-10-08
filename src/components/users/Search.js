@@ -1,8 +1,12 @@
-import React, {useState} from "react";
-import PropTypes from "prop-types";
+import React, {useState, useContext} from "react";
+import GithubContext from '../../context/github/githubContext'
+import AlertContext from '../../context/alert/alertContext'
 
 
-const Search = ({showClear, clearUsers, searchUsers, setAlert }) => {
+const Search = () => {
+    const githubContext = useContext(GithubContext);
+    const alertContext = useContext(AlertContext);
+
 
     // // Cand avem de-a face cu o FORM in React, e bine sa-i atribuim STATE
     // state = {
@@ -32,11 +36,12 @@ const Search = ({showClear, clearUsers, searchUsers, setAlert }) => {
         // Asta se modifica in:
         // if(this.state.text === '' ) {
         if(text === '' ) {
-            setAlert('Please enter something', 'light')
+            alertContext.setAlert('Please enter something', 'light')
         }
         else {
 
-            searchUsers(text);
+            githubContext.searchUsers(text);
+            // punem input-ul sa fie GOL
             setText('');
 
         }
@@ -56,18 +61,12 @@ const Search = ({showClear, clearUsers, searchUsers, setAlert }) => {
                 </form>
 
             {/* && face un "AND" si verifica daca e TRUE expresia */}
-                {showClear && <button className="btn btn-light btn-block" onClick={clearUsers}>Clear</button>}
+                {githubContext.users.length > 0 && <button className="btn btn-light btn-block" onClick={githubContext.clearUsers}>Clear</button>}
             </div>
         )        
     
 }
 
-Search.propTypes = {
-    searchUsers: PropTypes.func.isRequired,        
-    clearUsers: PropTypes.func.isRequired,
-    showClear: PropTypes.bool.isRequired,
-    setAlert: PropTypes.func.isRequired   
-}
 
 
 export default Search

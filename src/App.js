@@ -1,27 +1,39 @@
-import React, {  Component, Fragment } from "react";
+import React, { Fragment } from "react";
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom"
 import Navbar from "./components/layout/Navbar";
-import Users from "./components/users/Users"
 import User from "./components/users/User"
-import Search from "./components/users/Search"
+import Home from "./components/pages/Home"
+import NotFound from "./components/pages/NotFound"
 import Alert from "./components/layout/Alert"
 import About from "./components/pages/About"
+
+import GithubState from './context/github/GithubState'
+
 import "./App.css";
-import axios from "axios";
+import GithbutState from "./context/github/GithubState";
+import AlertState from "./context/alert/AlertState";
 
 
-class App extends Component {
+const App = () =>  {
 
 
   // Cream un nou state
-  state = {
-    users: [],
-    user: {},
-    repos: [],
-    loading: false,
-    alert: null,
+  //Schimbam state-ul folosind useState
 
-  }
+  // const [users, setUsers] = useState([]);
+  // const [user, setUser] = useState({});
+  // const [repos, setRepos] = useState([]);
+  // const [loading, setLoading] = useState(false);
+  // const [alert, setAlert] = useState(null);
+
+  // state = {
+  //   users: [],
+  //   user: {},
+  //   repos: [],
+  //   loading: false,
+  //   alert: null,
+
+  // }
   
   // ======> putem sa NU mai avem nevoie sa afisam toate conturile, acum ca avem search-ul
 
@@ -54,86 +66,116 @@ class App extends Component {
 // asa iau Props-urile din alte Componente
 // Folosim tot un GET de la Github, asa ca tot async / await
 // Asemanator cu cel de sus, diferenta este ca datele sunt in "data.items"
-searchUsers = async (text) => {
 
-  this.setState({loading: true});
-  const res = await axios.get(`https://api.github.com/search/users?q=${text}&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);  
-  this.setState({ users: res.data.items, loading: false});
-  console.log(text);
-};
+// Search Users il mutam in GithubState.js
+
+// const searchUsers = async (text) => {
+
+//   // setState({loading: true});
+//   setLoading(true);
+//   const res = await axios.get(`https://api.github.com/search/users?q=${text}&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);  
+  
+//   // this.setState({ users: res.data.items, loading: false});
+//   setUsers(res.data.items);
+//   setLoading(false);
+
+//   console.log(text);
+// };
 
 //Get a single Github User
 
-getUser = async (username) => {
-  this.setState({loading: true});
-  const res = await axios.get(`https://api.github.com/users/${username}?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);  
-  this.setState({ user: res.data, loading: false});
-}
+// const getUser = async (username) => {
+//   // this.setState({loading: true});
+//   setLoading(true);
+//   const res = await axios.get(`https://api.github.com/users/${username}?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);  
+//   // this.setState({ user: res.data, loading: false});
+//   setUser(res.data);
+//   setLoading(false);
+// }
 
 
-getUserRepos = async (username) => {
-  this.setState({loading: true});
-  const res = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);  
-  this.setState({ repos: res.data, loading: false});
-}
+// const getUserRepos = async (username) => {
+//   // this.setState({loading: true});
+//   setLoading(true);
+//   const res = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);  
+//   // this.setState({ repos: res.data, loading: false});
+//   setRepos(res.data);
+//   setLoading(false);
+// }
 
 
-clearUsers = () => {
-  this.setState({ 
-    // Ai grija la modul in care declari un ARRAy sa fie 0 !!!
-    users: [],
-    loading: false
-    })
-}
+// const clearUsers = () => {
 
-setAlert = (msg, type) => {
-    this.setState({ alert: { msg: msg, type : type }});
+//   // this.setState({ 
+//   //   // Ai grija la modul in care declari un ARRAy sa fie 0 !!!
+//   //   users: [],
+//   //   loading: false
+//   //   })
 
-    // Facem ca ALERT sa ramana doar cateva secunde pe ecran !!!
-    setTimeout( () => this.setState({alert: null}), 2000);
-}
+//   setUsers([]);
+//   setLoading(false);
 
-// render este life cycle method
-  render() {
+// }
+
+// const showAlert = (msg, type) => {
+//     // this.setState({ alert: { msg: msg, type : type }});
+//     setAlert({msg: msg, type : type})
+//     // Facem ca ALERT sa ramana doar cateva secunde pe ecran !!!
+//     // setTimeout( () => this.setState({alert: null}), 2000);
+//     setTimeout( () => setAlert(null), 2000);
+// }
+
+// render este life cycle method, eliminam ca acu este o functie
+
     // Destructing
-    const { repos, loading, users, user, alert } = this.state;
+    // const { repos, loading, users, user, alert } = this.state;
     
     return (
-      // Pentru a folosi ROUTER tre' sa inglobam tot in <Router></Router>
+      <GithbutState>
+        <AlertState>
+      {/* // Pentru a folosi ROUTER tre' sa inglobam tot in <Router></Router> */}
       <Router>
         <div className="App">
           <Navbar title="Github Finder" icon="fab f-github" />
             <div className="container">
-              <Alert alert={alert} />
+              <Alert />
               <Switch>
-                <Route exact path="/" 
-                render={ props => (
-                  <Fragment>
-                    <Search 
-                      searchUsers={this.searchUsers}
-                      clearUsers = {this.clearUsers}
-                      showClear= {users.length > 0 ? true : false}
-                      setAlert = {this.setAlert} 
+                
+                {/* <Route exact path="/"  */}
+                {/* render={ props => ( */}
+                  {/* // <Fragment> */}
+                    {/* <Search 
+                      // searchUsers={searchUsers}
+                      // clearUsers = {clearUsers}
+                      // showClear= {users.length > 0 ? true : false}
+                      // setAlert = {showAlert} 
                     />
-                    <Users loading={loading} users={users} />
-                  </Fragment>
-                )}/>
+                    <Users /> */}
+                  {/* </Fragment> */}
+                {/* )}/> */}
+
+                <Route exact path="/" component={Home}/>
                 <Route exact path="/about" component={About}/>
-                <Route exact path="/user/:login" render= {props => (
-                  <User 
-                    {...props } 
-                    getUser={this.getUser} 
-                    user={user} 
-                    loading={loading} 
-                    getUserRepos = {this.getUserRepos}
-                    repos={repos} />
-                )}/>
+                <Route exact path="/user/:login" component={User}/>
+                <Route component={NotFound}/>
+                
+                {/* // render= {props => ( */}
+                  {/* // <User  */}
+                    {/* {...props } 
+                    // getUser={getUser} 
+                    // user={user} 
+                    // loading={loading} 
+                    // getUserRepos = {getUserRepos}
+                    // repos={repos} />
+                // )}/> */}
               </Switch>             
             </div>        
         </div>
       </Router>
+      </AlertState>
+      </GithbutState>
     );
-  }
+ 
 }
 
 export default App;
